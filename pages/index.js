@@ -2,6 +2,7 @@ import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import { getAllPosts } from '../lib/posts'
 import Image from 'next/image'
+import Link from 'next/link'
 
 export default function Home() {
 
@@ -39,7 +40,11 @@ const BlogPostPreview = (props) => {
           layout='fill'
         />
       </div>
-      <h2>{data.title}</h2>
+      <h2>
+        <Link href={`/blog/${data.slug}`}>
+          <a>{data.title}</a>
+        </Link>
+      </h2>
       <div>{data.publishDate}</div>
       <p>
         {data.excerpt}

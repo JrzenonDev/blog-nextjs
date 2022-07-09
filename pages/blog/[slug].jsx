@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import { getAllSlugs, getPostData } from '../../lib/posts'
 import styles from '../../styles/BlogPost.module.css'
 
@@ -17,6 +18,11 @@ export default function BlogPost(props) {
         <h1>{postData.title}</h1>
         <p>{postData.author}/{postData.publishDate}</p>
         <p>{postData.content}</p>
+      </div>
+      <div>
+        <Link href='/'>
+          <a>-- Back to home page</a>
+        </Link>
       </div>
     </div>
   )
