@@ -1,7 +1,25 @@
+import Image from 'next/image';
 import { getAllSlugs, getPostData } from '../../lib/posts'
+import styles from '../../styles/BlogPost.module.css'
 
 export default function BlogPost(props) {
-  return <div>This is blog post page.</div>
+  const { postData } = props;
+  return (
+    <div className={styles.container}>
+      <div style={{width: '100px', height: '100px', position: 'relative'}}>
+        <Image 
+          src={postData.coverImage} 
+          alt={postData.title} 
+          layout='fill'
+        />
+      </div>
+      <div>
+        <h1>{postData.title}</h1>
+        <p>{postData.author}/{postData.publishDate}</p>
+        <p>{postData.content}</p>
+      </div>
+    </div>
+  )
 }
 
 export const getStaticPaths = () => {
