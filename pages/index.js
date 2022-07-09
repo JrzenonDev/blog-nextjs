@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import { getAllPosts } from '../lib/posts'
+import Image from 'next/image'
 
 export default function Home() {
 
@@ -16,7 +17,9 @@ export default function Home() {
       </div>
       <div>
         {posts.map(post => {
-          <BlogPostPreview key={post.id} data={post} />
+          return (
+            <BlogPostPreview key={post.id} data={post} />
+          )
         })}
       </div>
     </div>
@@ -28,18 +31,20 @@ const BlogPostPreview = (props) => {
   const { data } = props
 
   return (
-    <div style={{maxWidth: '400px'}}>
-      <img 
-        src='./images/chicken-soup-cover.jpg' 
-        alt='Chicken soup' 
-        style={{maxWidth: '100%'}}
-      />
-      <h2>Tasty chicken soup recipe</h2>
-      <div>30.06.2021</div>
+    <div style={{maxWidth: '400px', marginBottom: '50px'}}>
+      <div style={{width: '100px', height: '100px', position: 'relative'}}>
+        <Image 
+          src={data.coverImage} 
+          alt={data.title} 
+          layout='fill'
+        />
+      </div>
+      <h2>{data.title}</h2>
+      <div>{data.publishDate}</div>
       <p>
-        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Minima incidunt, necessitatibus beatae molestias possimus provident cumque. Libero animi maxime officiis nulla non numquam repudiandae dolore. Expedita natus voluptatem reprehenderit doloremque?
+        {data.excerpt}
       </p>
-      <div style={{fontWeight: 'bold'}}>By José Roberto</div>
+      <div style={{fontWeight: 'bold'}}>{data.author}</div>
     </div>
   )
 }
