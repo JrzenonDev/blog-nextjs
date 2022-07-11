@@ -1,9 +1,8 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
-import { getAllPosts } from '../lib/posts'
-import Image from 'next/image'
 import Link from 'next/link'
 import { request } from '../lib/datocms'
+import { Image } from 'react-datocms'
 
 const HOMEPAGE_QUERY = `
   query MyQuery {
@@ -14,6 +13,19 @@ const HOMEPAGE_QUERY = `
       }
       coverImage {
         url
+        responsiveImage {
+          width
+          webpSrcSet
+          title
+          srcSet
+          src
+          sizes
+          height
+          bgColor
+          base64
+          aspectRatio
+          alt
+        }
       }
       excerpt
       id
@@ -67,13 +79,7 @@ const BlogPostPreview = (props) => {
 
   return (
     <div style={{maxWidth: '400px', marginBottom: '50px'}}>
-      <div style={{width: '100px', height: '100px', position: 'relative'}}>
-        <Image 
-          src={data.coverImage.url} 
-          alt={data.title} 
-          layout='fill'
-        />
-      </div>
+      <Image data={data.coverImage.responsiveImage} />
       <h2>
         <Link href={`/blog/${data.slug}`}>
           <a>{data.title}</a>
