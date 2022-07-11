@@ -3,10 +3,44 @@ import styles from '../styles/Home.module.css'
 import { getAllPosts } from '../lib/posts'
 import Image from 'next/image'
 import Link from 'next/link'
+import { request } from '../lib/datocms'
 
-export default function Home() {
+const HOMEPAGE_QUERY = `
+  query MyQuery {
+    allArticles {
+      title
+      content {
+        value
+      }
+      coverImage {
+        url
+      }
+      excerpt
+      id
+      createdAt
+      slug
+    }
+    author {
+      name
+    }
+  }
+`;
 
-  const posts = getAllPosts()
+export async function getStaticProps() {
+  const data = await request({
+    query: HOMEPAGE_QUERY,
+    variables: { limit: 10 }
+  });
+  return {
+    props: { data }
+  };
+}
+
+export default function Home(props) {
+
+  const { data } = props
+  console.log('data: ', data)
+  const posts = data.allArticles
 
   return (
     <div className={styles.container}>
@@ -35,7 +69,7 @@ const BlogPostPreview = (props) => {
     <div style={{maxWidth: '400px', marginBottom: '50px'}}>
       <div style={{width: '100px', height: '100px', position: 'relative'}}>
         <Image 
-          src={data.coverImage} 
+          src={data.coverImage.url} 
           alt={data.title} 
           layout='fill'
         />
