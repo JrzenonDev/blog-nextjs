@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { getAllSlugs, getPostData } from '../../lib/posts'
 import styles from '../../styles/BlogPost.module.css'
+import { request } from '../../lib/datocms'
 
 export default function BlogPost(props) {
   const { postData } = props;
@@ -28,19 +29,69 @@ export default function BlogPost(props) {
   )
 }
 
-export const getStaticPaths = () => {
-  const paths = getAllSlugs();
+const PATHS_QUERY = `
+  query MyQuery {
+    allArticles {
+      slug
+    }
+  }
+`
+
+export const getStaticPaths = async () => {
+  const slugQuery = await request({
+    query: PATHS_QUERY,
+  })
+
+  let paths = [];
+  slugQuery.allArticles.map((p) => paths.push(`/blog/${p.slug}`))
+
   return {
     paths,
     fallback: false
   }
 }
 
-export const getStaticProps = ({ params }) => {
-  const postData = getPostData(params.slug);
+const ARTICLE_QUERY = `
+  query MyQuery($slug: String) {
+    article(filter: {slug: {eq: $slug}}) {
+      author {
+        name
+      }
+      content {
+        value
+      }
+      coverImage {
+        responsiveImage {
+          alt
+          aspectRatio
+          base64
+          bgColor
+          height
+          sizes
+          src
+          srcSet
+          title
+          webpSrcSet
+          width
+        }
+      }
+      id
+      publishDate
+      slug
+      title
+    }
+  }
+`
+
+export const getStaticProps = async ({ params }) => {
+  const post = await request({
+    query: ARTICLE_QUERY,
+    variables: { slug: params.slug }
+  })
+
   return {
     props: {
-      postData
+      postData: post.article
     }
   }
 }
